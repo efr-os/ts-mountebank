@@ -19,6 +19,7 @@ export class FlexiPredicate implements Predicate {
   operator: Operator = Operator.equals;
   method: HttpMethod | undefined = undefined;
   path: string | undefined = undefined;
+  query: Record<string, unknown> | undefined = undefined;
   private _body?: string = undefined;
 
   headers: Map<string, string> = new Map<string, string>();
@@ -34,6 +35,10 @@ export class FlexiPredicate implements Predicate {
   }
   withPath(path: string): FlexiPredicate {
     this.path = path;
+    return this;
+  }
+  withQuery(query: Record<string, unknown>): FlexiPredicate{
+    this.query = query;
     return this;
   }
   withMethod(method: HttpMethod): FlexiPredicate {
@@ -70,6 +75,9 @@ export class FlexiPredicate implements Predicate {
     if (this.path) {
       res.path = this.path;
     }
+    if (this.query) {
+      res.query = this.query;
+    }
     if (this._body !== undefined) {
       res.body = this._body;
     }
@@ -82,6 +90,7 @@ export class FlexiPredicate implements Predicate {
 export class EqualPredicate implements Predicate {
   method: HttpMethod = HttpMethod.GET;
   path = '/';
+  query: Record<string, unknown> | undefined = undefined;
   private _body?: string = undefined;
 
   headers: Map<string, string> = new Map<string, string>();
@@ -92,6 +101,10 @@ export class EqualPredicate implements Predicate {
   }
   withPath(path: string): EqualPredicate {
     this.path = path;
+    return this;
+  }
+  withQuery(query: Record<string, unknown>): EqualPredicate {
+    this.query = query;
     return this;
   }
   withMethod(method: HttpMethod): EqualPredicate {
@@ -128,6 +141,11 @@ export class EqualPredicate implements Predicate {
     if (this.path) {
       res.path = this.path;
     }
+
+    if (this.query) {
+      res.query = JSON.stringify(this.query);
+    }
+
     if (this._body) {
       res.body = this._body;
     }

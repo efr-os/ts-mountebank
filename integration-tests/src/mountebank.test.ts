@@ -1,12 +1,7 @@
-import { assert, expect } from 'chai';
-import request = require('superagent');
+import {assert, expect} from 'chai';
 
-import {
-  HttpMethod,
-  Imposter,
-  Mountebank,
-  DefaultStub,
-} from '@efr-os/ts-mountebank';
+import {DefaultStub, EqualPredicate, HttpMethod, Imposter, Mountebank, Stub, Response } from '@efr-os/ts-mountebank';
+import request = require('superagent');
 
 const port = 12345;
 const testPath = '/testpath';
@@ -45,6 +40,31 @@ describe('Mountebank', () => {
     const responseCode = await getImposterResponseCode();
     expect(responseCode).to.equal(222);
   });
+
+  it('can use query strings', async () =>{
+    const imposter = new Imposter()
+        .withPort(port)
+        .withStub(
+            new Stub()
+                .withPredicate(
+                    new EqualPredicate()
+                        .withMethod(HttpMethod.GET)
+                        .withPath('/testpath')
+                        .withQuery({ foo : 'bar' })
+                )
+                .withResponse(
+                    new Response()
+                        .withStatusCode(200)
+                        .withJSONBody({ foo: "bar" })
+                )
+        )
+
+    await mb.createImposter(imposter);
+    const res404 = await request.get(`http://localhost:${port}/testpath`)
+    const res200 = await request.get(`http://localhost:${port}/testpath?foo=bar`)
+    expect(res404.body).to.deep.equal({})
+    expect(res200.body).to.deep.equal({ foo: 'bar' })
+  })
 
   it('can query an imposter', async () => {
     // act
