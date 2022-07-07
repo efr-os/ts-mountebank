@@ -143,7 +143,7 @@ export class EqualPredicate implements Predicate {
     }
 
     if (this.query) {
-      res.query = JSON.stringify(this.query);
+      res.query = this.query;
     }
 
     if (this._body) {
