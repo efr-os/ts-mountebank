@@ -37,7 +37,6 @@ describe('Imposter', () => {
     const request = queriedImposter.requests[0];
     expect(request.method).to.equal('GET');
     expect(request.path).to.equal(testPath);
-    console.log(queriedImposter);
   });
 
 });
