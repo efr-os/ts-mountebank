@@ -49,7 +49,7 @@ describe('Mountebank', () => {
                 .withPredicate(
                     new EqualPredicate()
                         .withMethod(HttpMethod.GET)
-                        .withPath('/sometest')
+                        .withPath('/testpath')
                         .withQuery({ foo : 'bar' })
                 )
                 .withResponse(
@@ -60,9 +60,8 @@ describe('Mountebank', () => {
         )
 
     await mb.createImposter(imposter);
-    const res404 = await request.get(`http://localhost:${port}/sometest`)
-    const res200 = await request.get(`http://localhost:${port}/sometest?foo=bar`)
-
+    const res404 = await request.get(`http://localhost:${port}/testpath`)
+    const res200 = await request.get(`http://localhost:${port}/testpath?foo=bar`)
     expect(res404.body).to.deep.equal({})
     expect(res200.body).to.deep.equal({ foo: 'bar' })
   })
